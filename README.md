@@ -1,6 +1,8 @@
 # Viewport Tracking System
 
-A production-oriented viewport tracking system for sports video that intelligently detects motion and calculates optimal viewports for broadcasting and analytics workflows.
+<p align="center">
+  <img src="output/motion_detection.gif" alt="Motion Detection Demo" width="48%" height=280>
+</p>
 
 ## Overview
 
