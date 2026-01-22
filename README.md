@@ -38,8 +38,6 @@ Sentinel values (`None`) are propagated through the pipeline to ensure graceful 
 - Resizes frames to fixed resolution
 - Pushes frames into bounded queue with timeout handling
 
-**Design rationale**: Early frame sampling reduces downstream CPU load and queue pressure.
-
 ### 2. Motion Detection
 - Frame differencing on grayscale, blurred frames
 - Thresholding and dilation for noise reduction
@@ -92,21 +90,12 @@ All tunable parameters are loaded from `config.ini`, including:
 
 This allows behavior changes without modifying code.
 
-## Getting Started
-
-### Prerequisites
-
-- Python 3.8+
-- OpenCV
-- NumPy
-- Docker (optional)
-
 ### Running Locally
 
 Run the pipeline directly:
 
 ```bash
-python main.py --video sample_video_clip.mp4 --output output --config config.ini
+python main.py --video "input/sample_video_clip.mp4" --output output --config config.ini
 ```
 
 Outputs are written to:
@@ -133,49 +122,6 @@ Run with Docker Compose:
 docker compose up --build
 ```
 
-**Why Docker?**
-- Reproducible runtime environment
-- Matches cloud deployment behavior
-- Isolates OpenCV and system dependencies
-
-## AWS Deployment (ECS Fargate)
-
-This system is designed to run as a stateless batch workload on AWS ECS Fargate.
-
-Deployment configuration: `aws/ecs_task_definition.json`
-
-### Deployment Flow
-
-1. Docker image is built and pushed to Amazon ECR
-2. ECS task pulls input video from S3
-3. Viewport tracking pipeline executes
-4. Output videos and frames are uploaded back to S3
-5. Task exits cleanly
-
-### Resource Requirements
-
-- **CPU**: 1 vCPU
-- **Memory**: 2 GB
-
-This configuration supports 720p video at approximately 5 FPS with multiprocessing.
-
-## Design Decisions & Trade-Offs
-
-### Why Multiprocessing?
-- Avoids Python GIL limitations
-- Allows independent scaling of pipeline stages
-- Mirrors real-world video processing architectures
-
-### Why Bounded Queues?
-- Prevents runaway memory usage
-- Forces explicit backpressure
-- Makes overload behavior predictable and debuggable
-
-### Why Simple Motion Detection?
-- Fast and deterministic
-- Sufficient for viewport estimation
-- Leaves room for future ML-based upgrades
-
 ## Challenges & Solutions
 
 | Challenge | Solution |
@@ -189,13 +135,3 @@ This configuration supports 720p video at approximately 5 FPS with multiprocessi
 - Optical flow-based motion estimation
 - Player detection using lightweight CNN or VLM
 - Adaptive smoothing based on motion magnitude
-- GPU acceleration for detection
-- Live stream (RTSP) support
-
-## License
-
-[Your License Here]
-
-## Contributing
-
-[Contributing guidelines if applicable]
