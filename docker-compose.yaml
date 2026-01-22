@@ -1,0 +1,43 @@
+version: "3.8"
+
+services:
+  viewport-tracker:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: viewport-tracker
+
+    volumes:
+      # Mount input video (read-only)
+      - ./input:/app/input:ro
+
+      # Mount output directory
+      - ./output:/app/output
+
+      # Mount config file (read-only)
+      - ./config.ini:/app/config.ini:ro
+
+    environment:
+      - PYTHONUNBUFFERED=1
+
+    command:
+      [
+        "python",
+        "main.py",
+        "--video",
+        "/app/input/sample_video_clip.mp4",
+        "--output",
+        "/app/output",
+        "--config",
+        "/app/config.ini"
+      ]
+
+    # Optional resource limits (good to show awareness)
+    deploy:
+      resources:
+        limits:
+          cpus: "2.0"
+          memory: 2G
+        reservations:
+          cpus: "1.0"
+          memory: 1G

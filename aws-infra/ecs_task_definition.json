@@ -1,0 +1,34 @@
+{
+  "family": "viewport-tracker",
+  "networkMode": "awsvpc",
+  "requiresCompatibilities": ["FARGATE"],
+  "cpu": "1024",
+  "memory": "2048",
+  "executionRoleArn": "arn:aws:iam::123456789012:role/ecsTaskExecutionRole",
+  "taskRoleArn": "arn:aws:iam::123456789012:role/viewportTrackerTaskRole",
+  "containerDefinitions": [
+    {
+      "name": "viewport-tracker",
+      "image": "123456789012.dkr.ecr.us-east-1.amazonaws.com/viewport-tracker:latest",
+      "essential": true,
+      "environment": [
+        { "name": "INPUT_VIDEO_S3", "value": "s3://YOUR_BUCKET/sample_video_clip.mp4" },
+        { "name": "OUTPUT_S3", "value": "s3://YOUR_BUCKET/output/" }
+      ],
+      "command": [
+        "bash",
+        "-lc",
+        "set -e; mkdir -p /app/input /app/output; aws s3 cp \"$INPUT_VIDEO_S3\" /app/input/input.mp4; python main.py --video /app/input/input.mp4 --output /app/output --config /app/config.ini; aws s3 sync /app/output \"$OUTPUT_S3\""
+      ],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "/ecs/viewport-tracker",
+          "awslogs-region": "us-east-1",
+          "awslogs-stream-prefix": "ecs"
+        }
+      }
+    }
+  ]
+}
+
