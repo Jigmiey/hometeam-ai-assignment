@@ -1,7 +1,7 @@
 # Viewport Tracking System
 
 <p align="center">
-  <img src="output/motion_detection.gif" alt="Motion Detection Demo" width="90%" height=280>
+  <img src="output/motion_detected.gif" alt="Motion Detection Demo" width="100%" height=400>
 </p>
 
 ## Overview
